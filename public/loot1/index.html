@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loot and See Your Reward!</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="index.min.js"></script>
+    <style>
+       @import url("https://fonts.googleapis.com/css?family=Russo+One");
+@keyframes float {
+  0% {
+    top: 0;
+  }
+  30% {
+    top: -30px;
+  }
+  90% {
+    top: 5px;
+  }
+  100% {
+    top: 0;
+  }
+}
+@keyframes shadow-aperture {
+  0% {
+    opacity: 0.35;
+    transform: translate(-50%, -50%) scale(1, 0.2);
+  }
+  30% {
+    opacity: 0.15;
+    transform: translate(-50%, -50%) scale(0.8, 0.15);
+  }
+  90% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.1, 0.25);
+  }
+  100% {
+    opacity: 0.35;
+    transform: translate(-50%, -50%) scale(1, 0.2);
+  }
+}
+@keyframes inflate {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1080deg);
+  }
+}
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #595656;
+  font-family: "Russo One";
+}
+
+#stage {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+h1 {
+  flex: 1 0 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 6rem;
+  margin-bottom: 0;
+}
+
+h3 {
+  flex: 1 0 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+}
+
+.content-width {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.box-list {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  list-style-type: none;
+}
+.box-list li {
+  padding: 1em;
+  position: relative;
+  flex: 0 0 20%;
+  height: 200px;
+}
+.box-list li .box {
+  background-color: transparent;
+  border: 0;
+  display: block;
+  width: 100%;
+  height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  left: 0;
+  animation-name: float;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+.box-list li .box:hover, .box-list li .box:focus {
+  animation: inflate 0.5s 1, float 2s infinite;
+  cursor: pointer;
+  outline: 0;
+}
+.box-list li .box.click {
+  animation: spin 0.5s 1, inflate 0.5s 1, float 2s infinite;
+  -webkit-filter: blur(2px);
+}
+.box-list li .box.open {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjM1OS43MDdweCIgaGVpZ2h0PSIzNDQuNDM5cHgiIHZpZXdCb3g9IjAgMCAzNTkuNzA3IDM0NC40MzkiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDM1OS43MDcgMzQ0LjQzOSIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGcgaWQ9IkxheWVyXzIiPjwvZz48ZyBpZD0iTGF5ZXJfMl9jb3B5Ij48cGF0aCBmaWxsPSIjNTk0QTQyIiBkPSJNMzU5LjcwNyw0OS44NzZjMC0zLjg2Ni0zLjEzMi03LTYuOTk4LTdoLTAuMDA1Yy0xLjY4OCwwLTMuMjM2LDAuNTk4LTQuNDQ1LDEuNTkzbC01Ni4zMjcsNDUuNTg2TDE4MC45NzUsNjAuOTUyYy0wLjEyOS0wLjE4My0wLjI2NC0wLjM2MS0wLjQxMS0wLjUzMkwxMzAuNjMyLDIuNDMzQzEyOS4yNTksMC44MzksMTI3LjMwNCwwLDEyNS4zMjMsMGMtMS4yNzQsMC0yLjU2LDAuMzQ4LTMuNzA3LDEuMDY1TDMuMjg4LDc1LjA1OGMtMS43NTEsMS4wOTUtMi45MywyLjkwOC0zLjIxOSw0Ljk1M2MtMC4yOSwyLjA0NSwwLjMzOCw0LjExNCwxLjcxNyw1LjY1M2w0OS40Myw1NS4xODljLTAuMTY3LDAuNTUtMC4yNTIsMS4xMjctMC4yMjQsMS43MThsNi41OTEsMTQxLjMyOGMwLjA5OCwyLjExLDEuNDgsMy45NDQsMy40ODIsNC42MTlsMTY1LjEyOCw1NS42NTJjMC41MzUsMC4xODEsMS4wODgsMC4yNjksMS42MzYsMC4yNjljMS4yNzUsMCwyLjUyNy0wLjQ3NywzLjQ5LTEuMzcxbDEwMy42MTYtOTYuMjk0YzEuMDQ0LTAuOTcsMS42MzctMi4zMywxLjYzNy0zLjc1NXYtMTM3LjNjMC0wLjg1OS0wLjIxNy0xLjY3Ny0wLjYtMi4zOTlsMjMuMDA4LTUwLjMzN0MzNTkuNDQ1LDUyLjA0NywzNTkuNzA3LDUwLjk5MiwzNTkuNzA3LDQ5Ljg3NnoiLz48Zz48cG9seWdvbiBmaWxsPSIjNzU0QzI5IiBwb2ludHM9IjMyNi4zMiwxMTQuODE0IDIzMS40OTEsMTk0LjU2NCAyMzEuNDkxLDMyOC45MTQgMzI2LjMyLDI0MC43ODUgIi8+PHBvbHlnb24gZmlsbD0iI0E5N0M1MCIgcG9pbnRzPSI2MS40OTUsMTQ3LjczMyA2Ny42NTksMjc5LjkyMiAyMjQuMTY5LDMzMi42NjkgMjI0LjE2OSwxOTUuNTk4IDE2Ny44MDQsMTc5LjAxMyAiLz48cG9seWdvbiBmaWxsPSIjQzQ5QTZDIiBwb2ludHM9IjE3Ni4wMDQsNzIuODU5IDY5LjM3LDE0Mi40MTYgMTc2LjAxLDE3My43OTQgMTc2LjAwNCwxNzMuNzkyICIvPjxwYXRoIGZpbGw9IiNBOTdDNTAiIGQ9Ik0xNzguODYsNzAuOTk2bC0yLjg1NiwxLjg2M3YxMDAuOTM0bDAuMDA2LDAuMDAybDQ3Ljk5MSwxNC4xMjFjLTAuMDE4LTAuNjg4LDAuMDU4LTEuMzg3LDAuMjU4LTIuMDc2bDE0Ljk0Mi01MS40OTVjMC4zOTgtMS4zNzMsMS4yMDgtMi41OTEsMi4zMTktMy40OTFsNDAuNTIxLTMyLjc5NUwxNzguODYsNzAuOTk2eiIvPjwvZz48cG9seWdvbiBmaWxsPSIjOUI4NTc5IiBwb2ludHM9IjEyNC42MDgsMTYyLjQ4NyAxNjQuMDUsMTc0LjA5MSAxNjQuMDUsMjM3LjUzIDE1Mi42NSwyMjguNzQyIDE0MC4yMDIsMjMwLjkzOCAxMzMuMTIyLDIyNC44MzUgMTI0LjgyNCwyMjYuODM2ICIvPjxwb2x5Z29uIGZpbGw9IiM4QjVFM0MiIHBvaW50cz0iMjMwLjk4MSwxODcuNzkxIDMyNi4zMTIsMTA3LjYyIDM1Mi43MDQsNDkuODc2IDI0NS45MjQsMTM2LjI5NSAiLz48cG9seWdvbiBmaWxsPSIjQzQ5QTZDIiBwb2ludHM9IjcsODAuOTkzIDYwLjAwMSwxNDAuMTcgMTc1LjI2LDY0Ljk4NyAxMjUuMzI3LDcgIi8+PC9nPjwvc3ZnPg==);
+}
+.box-list li .box.closed {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI4NS41ODZweCIgaGVpZ2h0PSIyODQuODU0cHgiIHZpZXdCb3g9IjAgMCAyODUuNTg2IDI4NC44NTQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI4NS41ODYgMjg0Ljg1NCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGcgaWQ9IkxheWVyXzIiPjxwYXRoIGZpbGw9IiM1OTRBNDIiIGQ9Ik0yODEuNzYxLDQxLjE3NUwxMjUuNDIsMC4xNjhjLTEuNC0wLjM2OC0yLjg4OS0wLjEyNS00LjEwMSwwLjY2NUwyLjMyNiw3OC40NTNjLTEuNTIyLDAuOTkzLTIuNDA1LDIuNzE3LTIuMzIsNC41MzJsNi41OSwxNDEuMzI4YzAuMDk4LDIuMTEsMS40ODEsMy45NDQsMy40ODMsNC42MTlsMTY1LjEyOCw1NS42NTJjMC41MzUsMC4xODEsMS4wODgsMC4yNjksMS42MzYsMC4yNjljMS4yNzUsMCwyLjUyNy0wLjQ3NywzLjQ5LTEuMzcxbDEwMy42MTYtOTYuMjk0YzEuMDQ0LTAuOTcsMS42MzctMi4zMywxLjYzNy0zLjc1NXYtMTM3LjNDMjg1LjU4Niw0My44MDMsMjg0LjAxNSw0MS43NjYsMjgxLjc2MSw0MS4xNzV6Ii8+PGc+PHBvbHlnb24gZmlsbD0iI0E5N0M1MCIgcG9pbnRzPSIxMC41MDksODguMTQ3IDE2LjY3MywyMjAuMzM3IDE3My4xODMsMjczLjA4NCAxNzMuMTgzLDEzNi4wMTMgMTE2LjgxNywxMTkuNDI4ICIvPjxwb2x5Z29uIGZpbGw9IiM3NTRDMjkiIHBvaW50cz0iMjc1LjMzNCw1NS4yMjkgMTgwLjUwNSwxMzQuOTc5IDE4MC41MDUsMjY5LjMyOCAyNzUuMzM0LDE4MS4xOTkgIi8+PHBvbHlnb24gZmlsbD0iI0M0OUE2QyIgcG9pbnRzPSIxNzUuOTkxLDEyOS4yMDYgMjQyLjYwNSw3My4xODUgMjcxLjMyMSw0OS4wMzUgMTI1LjAxOCwxMC42NjEgMTUuNjI0LDgyLjAxOSAiLz48L2c+PHBvbHlnb24gZmlsbD0iI0MyQjU5QiIgcG9pbnRzPSI3My42MjIsMTAyLjkwMSAxODMuNDM1LDE1LjM4NSAyMjMuOTEzLDI2LjAwMiAxMTMuMDYzLDExNC41MDYgIi8+PHBvbHlnb24gZmlsbD0iIzlCODU3OSIgcG9pbnRzPSI3My42MjIsMTAyLjkwMSAxMTMuMDYzLDExNC41MDYgMTEzLjA2MywxNzcuOTQ0IDEwMS42NjQsMTY5LjE1NiA4OS4yMTYsMTcxLjM1MyA4Mi4xMzYsMTY1LjI1IDczLjgzOCwxNjcuMjUxICIvPjwvZz48ZyBpZD0iTGF5ZXJfMl9jb3B5Ij48L2c+PC9zdmc+);
+}
+.box-list li .loot-shadow {
+  position: absolute;
+  bottom: -50%;
+  left: 50%;
+  transform: translate(-50%, -20%) scale(1, 0.2);
+  border-radius: 50%;
+  width: calc(100% - 3em);
+  height: 100px;
+  background: black;
+  opacity: 0.35;
+  -webkit-filter: blur(10px);
+  animation-name: shadow-aperture;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+#again {
+  display: none;
+}
+    </style>
+
+    <style>
+        .button {
+            position: absolute;
+    top: 70%;
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 18px 33px;
+    border: 1px solid #a12727;
+    border-radius: 8px;
+    background: #ff4a4a;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff4a4a), to(#992727));
+    background: -moz-linear-gradient(top, #ff4a4a, #992727);
+    background: linear-gradient(to bottom, #ff4a4a, #992727);
+    -webkit-box-shadow: #ff5959 0px 0px 11px 0px;
+    -moz-box-shadow: #ff5959 0px 0px 11px 0px;
+    box-shadow: #ff5959 0px 0px 11px 0px;
+    text-shadow: #591717 1px 1px 2px;
+    font: normal normal bold 29px arial;
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:hover,
+.button:focus {
+    background: #ff5959;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff5959), to(#b62f2f));
+    background: -moz-linear-gradient(top, #ff5959, #b62f2f);
+    background: linear-gradient(to bottom, #ff5959, #b62f2f);
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:active {
+    background: #982727;
+    background: -webkit-gradient(linear, left top, left bottom, from(#982727), to(#982727));
+    background: -moz-linear-gradient(top, #982727, #982727);
+    background: linear-gradient(to bottom, #982727, #982727);
+}
+.button:before{
+    content:  "\0000a0";
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    margin: 0 4px -6px -4px;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACgklEQVRIibXVP4hcVRQG8N952Uw0SJo8LRYVC11EmyBWhmCERVHERjSFtQimCIKQIkyzY0hhukURNDbiP7AQLBURi0UsomAIWthICslOZAkBl8n6jsW8N3kzOzM7AT1wud893HO/737v3vsChf8xluq+mkFUld3Bg3gOd+FiRHyzubZ/pzW/moejTlStRQtUh8/8XUSx7008iY+CrRzix6VX+m91rrbnz8Iz7Yli3wt4CB/jVHIGy3hbeP/u7qCt1CzcWDRJVASvJedwGl2s4DqeNdzNI7g8S+BooRbbGHtyEA/jU1yIiHewhcfwU01YTakfw5PKJyf+gQEOymRIegn34aoFomj1k+2regffEUQ0NT38Tv44pX4XnrTolvrwLo5hhQQ1xct4SsQhC1g07ZiO4nB3sCTzUET8FpTJCWI9uCflS3gRq8JRmX9Jy1G4tLl2oLkP1a5TVHYHK1jFJ/1eZwtbZffmUH6moMhAKkKsZihlHiFOC0cyHcMP8yx6Guv4pewOnhjmxiwa9eO5uD8iCtxrzikifWZ4HJfxddm9+XwtHh5NuVQPPk9Z1rtq55uoGgHNN2jb9HpErA/5bMssIqKzS8yUyMwT/V7ni2bc3sHo60fEe5m5UVfcgU5dLGuVs3Bb/XSLqOrX8lWZ27eUjcncG9ckbYKxi9bvdX7F2YgwbDTYKDcFT6w11aIWPp+Zl/eyZQxzY0+LGrDZ62zj5KIWZeYOfl7IopZV3+PDhSziy6z++fN2LIIqIk9l5sYeFl3BG9fO3jn3uR6zqMGbawdukM/gA+xM2ALfJkf7vc6VydqpF21elN3BAziOZeG6tCHiYn9t/8yaXb/L/xL/CyN2Rx1IwOGLAAAAAElFTkSuQmCC") no-repeat left center transparent;
+    background-size: 100% 100%;
+}
+
+
+    </style>
+</head>
+<body>
+    <p>
+        <a class="button" id="again" href="https://binom.dasocialmedia.com/click.php?lp=1">Claim Your Discount</a>
+    </p>
+    <canvas style="position: absolute;" id="my-canvas">
+    </canvas>
+    <div id="stage" class="content-width">
+        <h1 class="maintitle">LOOT</h1>
+        <h3 class="status">Check Your BuzzBGone Discount!</h3>
+        <ul class="box-list">
+            <li>
+                <button type="button" class="box closed"></button>
+                <span class="loot-shadow"></span>
+            </li>
+            <li>
+                <button type="button" class="box closed"></button>
+                <span class="loot-shadow"></span>
+            </li>
+            <li>
+                <button type="button" class="box closed"></button>
+                <span class="loot-shadow"></span>
+            </li>
+            <li>
+                <button type="button" class="box closed"></button>
+                <span class="loot-shadow"></span>
+            </li>
+        </ul>
+        
+        
+        
+        
+    </div>
+    
+    <script>
+        function checkOpen() {
+	var allBoxes = $('.box-list li button');
+	var allOpenBoxes = $('.box-list li button.open');
+	var allBoxesAreOpen = (allBoxes.length === allOpenBoxes.length);
+	
+	if(allBoxesAreOpen)
+		{
+			$('#again').show();
+		}
+}
+
+$(document).ready(function(){
+    var counter = 0;
+	$('.box-list li').on('click', '.box', function (){
+		var box = $(this);
+		if(box.hasClass('open'))
+			{
+				return;
+			}
+		box.addClass('click');
+
+		setTimeout(function (){
+			box.removeClass('click');
+			box.toggleClass('closed open');	
+			checkOpen();
+
+            switch (counter) {
+                case 0:
+                    $('.status').text('Nothing!');
+                    break;
+
+                case 1:
+                    $('.status').text('Nope :(');
+                    break;
+                
+                case 2:
+                    $('.status').text('Try again!');
+                    break;
+                
+                case 3:
+                    $('.box-list').hide();
+                    var confettiSettings = { target: 'my-canvas' };
+                    var confetti = new ConfettiGenerator(confettiSettings);
+                    confetti.render();
+                    $('.status').text('Winner! 35% Off BuzzBGone!');
+                    $('.maintitle').text('35%')
+
+                    $('#my-canvas').click(() => {
+                        window.open('https://binom.dasocialmedia.com/click.php?lp=1');
+                    });
+                    break;
+            }
+
+            counter += 1;
+            
+		}, 700);
+	});
+	
+	$('#again').on('click', function(){
+		$('.box').toggleClass('open closed');
+		$(this).hide();
+	});
+});
+    </script>
+</body>
+</html>
